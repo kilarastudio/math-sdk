@@ -19,7 +19,7 @@
         "ms-toolsai.jupyter"
       ],
       "settings": {
-        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
         "python.formatting.provider": "black"
       }
     }
@@ -28,8 +28,11 @@
   // Use 'forwardPorts' to make a list of ports inside the container available locally
   // "forwardPorts": [8000, 5000],
 
-  // Use 'postCreateCommand' to run commands after the container is created
-  "postCreateCommand": "make setup",
+  // Install uv once, then create the project environment from the lockfile.
+  "postCreateCommand": "command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh; export PATH=\"$HOME/.local/bin:$PATH\"; uv sync",
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:${containerEnv:HOME}/.local/bin"
+  },
 
   // Set the default user to vscode (non-root)
   "remoteUser": "vscode"

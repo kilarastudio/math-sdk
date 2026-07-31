@@ -10,13 +10,14 @@ For technical details [view the docs](https://stakeengine.github.io/math-sdk/)
 
 # Installation
  
-This repository requires Python3 (version >= 3.12), along with the PIP package installer.
+This repository requires [uv](https://docs.astral.sh/uv/) and Python 3.12. uv manages the project Python environment and dependencies.
 If the included optimization algorithm is being used, Rust/Cargo will also need to be installed.
 
-It is recommended to use [Make](https://www.gnu.org/software/make/) and setup the engine by running:
+Install dependencies and create the project environment with:
 ```sh
-make setup
+uv sync
 ```
 
-Alternatively, visit our [Setup and Installation page](https://stakeengine.github.io/math-sdk/math_docs/general_overview/) for more details.
+Run tests with `uv run pytest tests/`, or use `make setup`, `make test`, and `make run GAME=<game_id>` as shortcuts for the equivalent uv commands.
 
+Alternatively, visit our [Setup and Installation page](https://stakeengine.github.io/math-sdk/math_docs/general_overview/) for more details.

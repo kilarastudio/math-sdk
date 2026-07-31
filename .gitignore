@@ -21,9 +21,12 @@ __pycache__
 **/optimization_files/**
 
 /env
+/.venv
 *.env
 *.DS_Store
 *.toml
+# Keep project configuration and the reproducible uv lockfile tracked.
+!pyproject.toml
+!uv.lock
 
 **/site/*
-

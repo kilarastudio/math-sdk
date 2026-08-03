@@ -1,4 +1,4 @@
-TEST_NAMES = 0_0_cluster 0_0_scatter 0_0_lines 0_0_expwilds 0_0_ways 0_0_lines_feature_match
+TEST_NAMES = 0_0_cluster 0_0_scatter 0_0_lines 0_0_expwilds 0_0_ways 0_0_lines_feature_match keris_wild
 
 .PHONY: setup run test test_run clean
 

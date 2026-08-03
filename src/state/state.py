@@ -258,6 +258,7 @@ class GeneralGameState(ABC):
         self.win_manager = WinManager(self.config.basegame_type, self.config.freegame_type, mode_max_win)
         self.library = {}
         self.recorded_events = {}
+        self._payout_ints = []
         self.betmode = betmode
         self.num_sims = num_sims
         for sim in range(

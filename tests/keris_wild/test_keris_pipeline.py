@@ -15,14 +15,14 @@ SPEC.loader.exec_module(RUN)
 
 
 def test_default_pipeline_builds_optimized_publish_artifacts():
-    assert RUN.NUM_THREADS == 10
-    assert RUN.RUST_THREADS == 14
-    assert RUN.BATCHING_SIZE == 5_000
+    assert RUN.NUM_THREADS == 8
+    assert RUN.RUST_THREADS == 8
+    assert RUN.BATCHING_SIZE == 6_250
     assert RUN.COMPRESSION is True
     assert RUN.NUM_SIM_ARGS == {
-        "base": 100_000,
-        "ante": 100_000,
-        "bonus_buy": 100_000,
+        "base": 1_000_000,
+        "ante": 250_000,
+        "bonus_buy": 250_000,
     }
     assert RUN.RUN_CONDITIONS == {
         "run_sims": True,

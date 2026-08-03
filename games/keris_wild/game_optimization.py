@@ -49,7 +49,7 @@ class OptimizationSetup:
                         search_conditions={"symbol": "scatter"},
                     ).return_dict(),
                     "basegame": ConstructConditions(
-                        rtp=0.631783,
+                        rtp=0.631565,
                         hr=1 / (BASE_HIT_PROBABILITY - BASE_FEATURE_PROBABILITY),
                     ).return_dict(),
                 },
@@ -86,7 +86,7 @@ class OptimizationSetup:
                     ).return_dict(),
                     "0": ConstructConditions(rtp=0.0, av_win=0, search_conditions=0).return_dict(),
                     "freegame": ConstructConditions(
-                        rtp=0.965733,
+                        rtp=0.964930,
                         hr=1 / BONUS_FREEGAME_PROBABILITY,
                     ).return_dict(),
                 },

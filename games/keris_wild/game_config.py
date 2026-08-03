@@ -102,7 +102,7 @@ class GameConfig(Config):
         self.provider_name = "kilara"
         self.working_name = "Keris Wilds: Pusaka Sang Raja"
         self.game_name = "keris_wilds"
-        self.rtp = 0.967118
+        self.rtp = 0.966900
         self.wincap = 10000.0
         self.min_denomination = 0.1
         self.win_type = "lines"
@@ -143,7 +143,7 @@ class GameConfig(Config):
 
     def _build_bet_modes(self) -> list[BetMode]:
         mode_specs = {
-            "base": (1.0, 0.967118, "BR0", [
+            "base": (1.0, 0.966900, "BR0", [
                 ("wincap", 0.00001, True, True, self.wincap),
                 ("0", 0.68692, False, False, 0.0),
                 ("freegame", 0.00455, True, False, None),
@@ -156,7 +156,7 @@ class GameConfig(Config):
                 ("freegame", 0.01140, True, False, None),
                 ("basegame", 0.30319, False, False, None),
             ]),
-            "bonus_buy": (72.0, 0.967703, "BR0", [
+            "bonus_buy": (72.0, 0.966900, "BR0", [
                 ("wincap", 0.00002, True, True, self.wincap),
                 ("0", 0.03754, True, False, 0.0),
                 ("freegame", 0.96244, True, False, None),

@@ -28,9 +28,9 @@ def test_locked_reels_and_mode_contract():
         "bonus_buy": 72.0,
     }
     assert {mode.get_name(): mode.get_rtp() for mode in config.bet_modes} == {
-        "base": 0.967118,
+        "base": 0.966900,
         "ante": 0.962500,
-        "bonus_buy": 0.967703,
+        "bonus_buy": 0.966900,
     }
 
 
@@ -39,6 +39,12 @@ def test_all_mode_rtps_are_within_half_a_percentage_point_of_base():
     mode_rtps = {mode.get_name(): mode.get_rtp() for mode in config.bet_modes}
 
     assert all(abs(rtp - mode_rtps["base"]) <= 0.005 for rtp in mode_rtps.values())
+
+
+def test_all_mode_rtps_are_within_production_limits():
+    config = GameConfig()
+
+    assert all(0.90 <= mode.get_rtp() <= 0.967 for mode in config.bet_modes)
 
 
 def test_paytable_uses_rgs_tenth_credit_granularity():

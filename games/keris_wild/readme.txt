@@ -5,9 +5,9 @@ respin. Free spins use per-reel sticky wilds whose multipliers grow from 1x to
 3x; paid-line multipliers are products capped at 20x.
 
 Modes:
-- base: 1x, BR0, locked RTP 0.967118
-- ante: 1.5x, BR1, locked RTP 0.959566
-- bonus_buy: 72x, direct 10 free spins, locked RTP 0.967703
+- base: 1x, BR0, locked RTP 0.966900
+- ante: 1.5x, BR1, locked RTP 0.962500
+- bonus_buy: 72x, direct 10 free spins, locked RTP 0.966900
 
 The v2.2 paytable is retuned to exact 0.10x increments for the RGS payout
 contract. Reel strips and all feature mechanics remain byte-for-byte unchanged.

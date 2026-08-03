@@ -10,12 +10,12 @@ from utils.game_analytics.run_analysis import create_stat_sheet
 from utils.rgs_verification import execute_all_tests
 
 
-NUM_THREADS = 10
-RUST_THREADS = 14
-BATCHING_SIZE = 5_000
+NUM_THREADS = 8
+RUST_THREADS = 8
+BATCHING_SIZE = 6_250
 COMPRESSION = True
 PROFILING = False
-NUM_SIM_ARGS = {"base": 100_000, "ante": 100_000, "bonus_buy": 100_000}
+NUM_SIM_ARGS = {"base": 1_000_000, "ante": 250_000, "bonus_buy": 250_000}
 RUN_CONDITIONS = {
     "run_sims": True,
     "run_optimization": True,

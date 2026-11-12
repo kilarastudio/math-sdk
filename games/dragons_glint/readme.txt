@@ -1,4 +1,4 @@
-# DEEP GLINT — Scatter Pays with Glint Spots
+# Dragon's Glint — Scatter Pays with Glint Spots
 
 Kilara's release game, grown from the kilara_poc proof of concept. Prototype math: the rules
 below are what the simulation implements; tuning values may still change before submission.

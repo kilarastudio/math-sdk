@@ -1,4 +1,4 @@
-"""Glint Spot and Glint Strike actions for DEEP GLINT."""
+"""Glint Spot and Glint Strike actions for Dragon's Glint."""
 
 import random
 

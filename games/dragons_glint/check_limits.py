@@ -3,7 +3,7 @@
 utils/rgs_verification.py does not divide ETL by the mode cost, so it flags the buy modes
 wrongly. This reads the published lookup tables and applies the page's definitions.
 
-Usage: python games/deep_glint/check_limits.py [publish_files dir]
+Usage: python games/dragons_glint/check_limits.py [publish_files dir]
 Wins are multiples of the base bet.
 """
 

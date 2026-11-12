@@ -5,7 +5,7 @@ from src.config.betmode import BetMode
 
 
 class GameConfig(Config):
-    """DEEP GLINT: scatter pays, tumbles and Glint Spots."""
+    """Dragon's Glint: scatter pays, tumbles and Glint Spots."""
 
     _instance = None
 
@@ -16,11 +16,11 @@ class GameConfig(Config):
 
     def __init__(self):
         super().__init__()
-        self.game_id = "deep_glint"
-        self.game_name = "deep_glint"
+        self.game_id = "dragons_glint"
+        self.game_name = "dragons_glint"
         self.provider_name = "kilara"
         self.provider_numer = 0
-        self.working_name = "DEEP GLINT"
+        self.working_name = "Dragon's Glint"
         self.wincap = 15000.0
         self.win_type = "scatter"
         self.rtp = 0.965

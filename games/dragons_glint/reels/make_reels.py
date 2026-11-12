@@ -1,6 +1,6 @@
-"""Generate the DEEP GLINT reel strips from symbol weights.
+"""Generate the Dragon's Glint reel strips from symbol weights.
 
-Run from anywhere:  python games/deep_glint/reels/make_reels.py
+Run from anywhere:  python games/dragons_glint/reels/make_reels.py
 Each strip has 6 reels of 250 stops. Scatters sit on stops 5 apart, so a reel never
 shows more than one at the reveal (tumbles can still bring a second one down).
 """

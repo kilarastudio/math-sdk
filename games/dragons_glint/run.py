@@ -1,9 +1,9 @@
-"""Main file for generating results for DEEP GLINT.
+"""Main file for generating results for Dragon's Glint.
 
 Usage (from the math-sdk root):
-    uv run python games/deep_glint/run.py                   # full pipeline, every mode
-    uv run python games/deep_glint/run.py --sims 1000 --raw  # books only
-    uv run python games/deep_glint/run.py --skip-sims        # reweight existing books and re-check
+    uv run python games/dragons_glint/run.py                   # full pipeline, every mode
+    uv run python games/dragons_glint/run.py --sims 1000 --raw  # books only
+    uv run python games/dragons_glint/run.py --skip-sims        # reweight existing books and re-check
 
 Weights come from game_weights.py (natural frequencies), not the Rust optimizer.
 """

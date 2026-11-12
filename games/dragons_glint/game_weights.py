@@ -1,4 +1,4 @@
-"""Natural lookup tables for DEEP GLINT.
+"""Natural lookup tables for Dragon's Glint.
 
 Instead of the Rust optimizer (which reshapes each category into its own trial distribution),
 every book keeps its simulated, natural frequency. Per mode and category we only set:

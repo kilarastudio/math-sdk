@@ -5,7 +5,7 @@ from src.config.betmode import BetMode
 
 
 class GameConfig(Config):
-    """Dragon's Glint: scatter pays, tumbles and Glint Spots."""
+    """Dragon's Glint: scatter pays, tumbles and Glint Spots. Design and targets: MATH.md."""
 
     _instance = None
 
@@ -21,50 +21,28 @@ class GameConfig(Config):
         self.provider_name = "kilara"
         self.provider_numer = 0
         self.working_name = "Dragon's Glint"
-        self.wincap = 15000.0
+        self.wincap = 25000.0
         self.win_type = "scatter"
-        self.rtp = 0.965
+        self.rtp = 0.967
         self.construct_paths()
 
         # Game Dimensions
         self.num_reels = 6
         self.num_rows = [5] * self.num_reels
         # Board and Symbol Properties
-        t1, t2, t3, t4 = (8, 8), (9, 10), (11, 13), (14, 36)
-        pay_group = {
-            (t1, "H1"): 3.0,
-            (t2, "H1"): 7.5,
-            (t3, "H1"): 15.0,
-            (t4, "H1"): 60.0,
-            (t1, "H2"): 2.0,
-            (t2, "H2"): 5.0,
-            (t3, "H2"): 10.0,
-            (t4, "H2"): 40.0,
-            (t1, "H3"): 1.3,
-            (t2, "H3"): 3.2,
-            (t3, "H3"): 7.0,
-            (t4, "H3"): 30.0,
-            (t1, "H4"): 1.0,
-            (t2, "H4"): 2.5,
-            (t3, "H4"): 6.0,
-            (t4, "H4"): 20.0,
-            (t1, "L1"): 0.6,
-            (t2, "L1"): 1.5,
-            (t3, "L1"): 4.0,
-            (t4, "L1"): 10.0,
-            (t1, "L2"): 0.4,
-            (t2, "L2"): 1.2,
-            (t3, "L2"): 3.5,
-            (t4, "L2"): 8.0,
-            (t1, "L3"): 0.2,
-            (t2, "L3"): 0.8,
-            (t3, "L3"): 2.5,
-            (t4, "L3"): 5.0,
-            (t1, "L4"): 0.1,
-            (t2, "L4"): 0.5,
-            (t3, "L4"): 1.5,
-            (t4, "L4"): 4.0,
+        # Three tiers, each one a count that is really seen (8-9 is the common win, 12+ the rare one).
+        t1, t2, t3 = (8, 9), (10, 11), (12, 36)
+        pays = {
+            "H1": (10.0, 25.0, 50.0),
+            "H2": (5.0, 12.0, 25.0),
+            "H3": (3.0, 6.0, 15.0),
+            "H4": (2.0, 4.0, 12.0),
+            "L1": (1.0, 2.0, 8.0),
+            "L2": (0.6, 1.2, 5.0),
+            "L3": (0.4, 1.0, 4.0),
+            "L4": (0.3, 0.8, 3.0),
         }
+        pay_group = {(tier, sym): value for sym, values in pays.items() for tier, value in zip((t1, t2, t3), values)}
         self.paytable = self.convert_range_table(pay_group)
 
         self.include_padding = True
@@ -74,18 +52,18 @@ class GameConfig(Config):
         # unlit spot, turns a primed spot into 2x, then grows a lit spot up to the cap.
         # "growth" is "double" (2, 4, 8...) or "add" (2, 3, 4...); "combine" is how the lit
         # spots under one symbol win make its multiplier: their "sum" or their "max".
-        self.glint_rule = {"combine": "max", "growth": "double", "cap": 256}
+        self.glint_rule = {"combine": "max", "growth": "double", "cap": 4096}
 
         self.freespin_triggers = {
-            self.basegame_type: {n: {4: 12, 5: 14}.get(n, 17) for n in range(4, 31)},
+            self.basegame_type: {n: {4: 10, 5: 12}.get(n, 15) for n in range(4, 31)},
             self.freegame_type: {n: 5 for n in range(3, 31)},
         }
         self.anticipation_triggers = {
             self.basegame_type: min(self.freespin_triggers[self.basegame_type].keys()) - 1,
             self.freegame_type: min(self.freespin_triggers[self.freegame_type].keys()) - 1,
         }
-        # Reels
-        reels = {"BR0": "BR0.csv", "FR0": "FR0.csv", "WCAP": "WCAP.csv"}
+        # Reels (reels/make_reels.py)
+        reels = {"BR0": "BR0.csv", "FR0": "FR0.csv"}
         self.reels = {}
         for r, f in reels.items():
             self.reels[r] = self.read_reels_csv(os.path.join(self.reels_path, f))
@@ -96,152 +74,80 @@ class GameConfig(Config):
         # Glint Strike: the character lights spots on the revealed board before it is evaluated.
         strike_shape = {"count": {3: 40, 4: 30, 5: 20, 6: 10}, "value": {2: 70, 4: 25, 8: 5}}
         no_strike = {"prob": 0.0, **strike_shape}
-        base_strike = {"prob": 0.05, **strike_shape}
+        base_strike = {"prob": 0.10, **strike_shape}
         every_strike = {"prob": 1.0, **strike_shape}
-        # Super free spins start with every spot lit at 2x.
-        super_start = {"count": 30, "value": 2}
         # Every free spins session (triggered or bought) opens with a Glint Strike; None turns it off.
         self.fs_start_strike = strike_shape
+        # Upgraded sessions start with every spot already lit.
+        super_start = {"count": 30, "value": 4}
+        hoard_start = {"count": 30, "value": 8}
 
-        # Free spins of at least this win are also sampled on their own ("freegame_tail"), so the
-        # rare 5,000x+ range has books in every mode. game_weights.py gives them their natural share.
-        self.fs_tail_min = 2000
+        # Scatters on a board that is forced to trigger, in the proportions the base reels give.
+        natural_scatters = {4: 926, 5: 71, 6: 3}
 
-        def freegame_distribution(criteria: str, quota: float, strike: dict, fs_scatters: dict, fs_start_glint):
+        # No round is forced to the max win and no reel exists only to reach it: max-win rounds
+        # are free spins that got there. "freegame_tail" books are free spins sampled at min_win
+        # or more, so the rare top of the range has books in every mode; game_weights.py gives
+        # them the probability the reels give that range.
+        def freegame_distribution(criteria: str, quota: float, strike: dict, fs_start_glint, min_win=None):
             conditions = {
                 "reel_weights": {
                     self.basegame_type: {"BR0": 1},
                     self.freegame_type: {"FR0": 1},
                 },
-                "scatter_triggers": fs_scatters,
+                "scatter_triggers": natural_scatters,
                 "strike": strike,
                 "fs_start_glint": fs_start_glint,
                 "force_wincap": False,
                 "force_freegame": True,
             }
-            if criteria == "freegame_tail":
-                conditions["min_win"] = self.fs_tail_min
+            if min_win is not None:
+                conditions["min_win"] = min_win
             return Distribution(criteria=criteria, quota=quota, conditions=conditions)
 
-        def spin_distributions(strike: dict, fs_scatters: dict) -> list:
+        def spin_distributions(strike: dict) -> list:
             """Distributions shared by the modes played spin by spin (base, ante, boost)."""
+            base_only = {
+                "reel_weights": {self.basegame_type: {"BR0": 1}},
+                "strike": strike,
+                "fs_start_glint": None,
+                "force_wincap": False,
+                "force_freegame": False,
+            }
             return [
-                Distribution(
-                    criteria="wincap",
-                    quota=0.001,
-                    win_criteria=self.wincap,
-                    conditions={
-                        "reel_weights": {
-                            self.basegame_type: {"BR0": 1},
-                            self.freegame_type: {"FR0": 1, "WCAP": 5},
-                        },
-                        "scatter_triggers": {5: 1, 6: 2},
-                        "strike": strike,
-                        "fs_start_glint": None,
-                        "force_wincap": True,
-                        "force_freegame": True,
-                    },
-                ),
-                freegame_distribution("freegame", 0.1, strike, fs_scatters, None),
-                freegame_distribution("freegame_tail", 0.005, strike, fs_scatters, None),
-                Distribution(
-                    criteria="0",
-                    quota=0.4,
-                    win_criteria=0.0,
-                    conditions={
-                        "reel_weights": {self.basegame_type: {"BR0": 1}},
-                        "strike": strike,
-                        "fs_start_glint": None,
-                        "force_wincap": False,
-                        "force_freegame": False,
-                    },
-                ),
-                Distribution(
-                    criteria="basegame",
-                    quota=0.494,
-                    conditions={
-                        "reel_weights": {self.basegame_type: {"BR0": 1}},
-                        "strike": strike,
-                        "fs_start_glint": None,
-                        "force_wincap": False,
-                        "force_freegame": False,
-                    },
-                ),
+                freegame_distribution("freegame", 0.1, strike, None),
+                freegame_distribution("freegame_tail", 0.02, strike, None, min_win=2000),
+                Distribution(criteria="0", quota=0.4, win_criteria=0.0, conditions=dict(base_only)),
+                Distribution(criteria="basegame", quota=0.48, conditions=dict(base_only)),
             ]
 
-        def feature_distributions(fs_start_glint) -> list:
-            """Distributions for the modes that go straight to free spins (bonus, super)."""
+        def feature_distributions(fs_start_glint, tail_min) -> list:
+            """Distributions for the modes that go straight to free spins (bonus, super, hoard)."""
+            if tail_min is None:
+                return [freegame_distribution("freegame", 1.0, no_strike, fs_start_glint)]
             return [
-                Distribution(
-                    criteria="wincap",
-                    quota=0.001,
-                    win_criteria=self.wincap,
-                    conditions={
-                        "reel_weights": {
-                            self.basegame_type: {"BR0": 1},
-                            self.freegame_type: {"FR0": 1, "WCAP": 5},
-                        },
-                        "scatter_triggers": {5: 1, 6: 2},
-                        "strike": no_strike,
-                        "fs_start_glint": fs_start_glint,
-                        "force_wincap": True,
-                        "force_freegame": True,
-                    },
-                ),
-                freegame_distribution("freegame", 0.994, no_strike, natural_scatters, fs_start_glint),
-                freegame_distribution("freegame_tail", 0.005, no_strike, natural_scatters, fs_start_glint),
+                freegame_distribution("freegame", 0.98, no_strike, fs_start_glint),
+                freegame_distribution("freegame_tail", 0.02, no_strike, fs_start_glint, min_win=tail_min),
             ]
 
-        natural_scatters = {4: 20, 5: 4, 6: 1}
+        def mode(name, cost, distributions, buy):
+            return BetMode(
+                name=name,
+                cost=cost,
+                rtp=self.rtp,
+                max_win=self.wincap,
+                auto_close_disabled=False,
+                is_feature=not buy,
+                is_buybonus=buy,
+                distributions=distributions,
+            )
+
+        # Costs are each mode's natural value / RTP (MATH.md, "Budget").
         self.bet_modes = [
-            BetMode(
-                name="base",
-                cost=1.0,
-                rtp=self.rtp,
-                max_win=self.wincap,
-                auto_close_disabled=False,
-                is_feature=True,
-                is_buybonus=False,
-                distributions=spin_distributions(base_strike, natural_scatters),
-            ),
-            BetMode(
-                name="ante",
-                cost=1.5,
-                rtp=self.rtp,
-                max_win=self.wincap,
-                auto_close_disabled=False,
-                is_feature=True,
-                is_buybonus=False,
-                distributions=spin_distributions(base_strike, natural_scatters),
-            ),
-            BetMode(
-                name="boost",
-                cost=1.75,
-                rtp=self.rtp,
-                max_win=self.wincap,
-                auto_close_disabled=False,
-                is_feature=True,
-                is_buybonus=False,
-                distributions=spin_distributions(every_strike, natural_scatters),
-            ),
-            BetMode(
-                name="bonus",
-                cost=140.0,
-                rtp=self.rtp,
-                max_win=self.wincap,
-                auto_close_disabled=False,
-                is_feature=False,
-                is_buybonus=True,
-                distributions=feature_distributions(None),
-            ),
-            BetMode(
-                name="super",
-                cost=250.0,
-                rtp=self.rtp,
-                max_win=self.wincap,
-                auto_close_disabled=False,
-                is_feature=False,
-                is_buybonus=True,
-                distributions=feature_distributions(super_start),
-            ),
+            mode("base", 1.0, spin_distributions(base_strike), False),
+            mode("ante", 3.0, spin_distributions(base_strike), False),
+            mode("boost", 1.9, spin_distributions(every_strike), False),
+            mode("bonus", 100.0, feature_distributions(None, 2000), True),
+            mode("super", 350.0, feature_distributions(super_start, 5000), True),
+            mode("hoard", 640.0, feature_distributions(hoard_start, None), True),
         ]

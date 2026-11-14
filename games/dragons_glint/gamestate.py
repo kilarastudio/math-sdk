@@ -7,6 +7,7 @@ class GameState(GameStateOverride):
 
     def run_spin(self, sim: int, simulation_seed=None):
         self.reset_seed(sim)
+        self.tail_attempts = 0
         self.repeat = True
         while self.repeat:
             self.reset_book()
@@ -23,7 +24,21 @@ class GameState(GameStateOverride):
             self.evaluate_finalwin()
             self.check_repeat()
 
+        if self.tail_attempts:
+            self.record({"tail_attempts": self.tail_attempts})
         self.imprint_wins()
+
+    def run_natural_spin(self) -> tuple:
+        """One unconditioned base spin, for measuring what the reels do on their own (run.py --natural).
+
+        Returns (base win, scatters on the final board). Needs a betmode and a base game criteria
+        to be set; it uses their strike setting and writes no book.
+        """
+        self.reset_book()
+        self.create_board_reelstrips()
+        self.glint_strike()
+        self.run_tumbles()
+        return self.win_manager.running_bet_win, self.count_special_symbols("scatter")
 
     def run_freespin(self):
         self.reset_fs_spin()

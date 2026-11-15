@@ -1,4 +1,4 @@
-# Dragon's Glint — Scatter Pays with Glint Spots
+# Pratala — Scatter Pays with Glint Spots
 
 Kilara's release game. The rules below are what the simulation implements; the game's rules
 page and paytable are written from this file. The design, its targets and the last

@@ -1,6 +1,6 @@
-"""Generate the Dragon's Glint reel strips from symbol counts.
+"""Generate the Pratala reel strips from symbol counts.
 
-Run from anywhere:  python games/dragons_glint/reels/make_reels.py
+Run from anywhere:  python games/pratala/reels/make_reels.py
 
 Each strip has 6 reels of 250 stops. A reel holds exactly the listed number of every symbol
 (the same on all six reels), shuffled with a fixed seed, so a reel change is a change to one

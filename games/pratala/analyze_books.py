@@ -1,7 +1,7 @@
 """Counters the standard files do not hold, read from the published books and their weights.
 
 Usage (from the math-sdk root):
-    uv run python games/dragons_glint/analyze_books.py [mode ...]
+    uv run python games/pratala/analyze_books.py [mode ...]
 
 Per mode, weighted by the published lookup table:
 * tumble wins per board (a board is one base spin or one free spin),

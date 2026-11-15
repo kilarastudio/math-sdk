@@ -1,10 +1,10 @@
-"""Main file for generating results for Dragon's Glint.
+"""Main file for generating results for Pratala.
 
 Usage (from the math-sdk root):
-    uv run python games/dragons_glint/run.py                    # full pipeline, every mode
-    uv run python games/dragons_glint/run.py --sims 2000 --raw  # books only, small sample
-    uv run python games/dragons_glint/run.py --natural 2000000  # only measure what the reels do unforced
-    uv run python games/dragons_glint/run.py --skip-sims        # reweight existing books and re-check
+    uv run python games/pratala/run.py                    # full pipeline, every mode
+    uv run python games/pratala/run.py --sims 2000 --raw  # books only, small sample
+    uv run python games/pratala/run.py --natural 2000000  # only measure what the reels do unforced
+    uv run python games/pratala/run.py --skip-sims        # reweight existing books and re-check
 
 Weights come from game_weights.py (natural frequencies), not the Rust optimizer.
 The design, its targets and the last measurements are in MATH.md.

@@ -6,7 +6,7 @@ from src.calculations.scatter import Scatter
 
 
 class GameCalculations(Executables):
-    """Game specific calculations for Dragon's Glint."""
+    """Game specific calculations for Pratala."""
 
     def evaluate_scatter_with_glint(self) -> dict:
         """Pay every symbol with 8+ copies on the board, multiplied by the lit spots under it.

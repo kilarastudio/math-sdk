@@ -1,4 +1,4 @@
-"""Natural lookup tables for Dragon's Glint.
+"""Natural lookup tables for Pratala.
 
 Instead of the Rust optimizer (which reshapes each category into its own trial distribution),
 every book keeps the frequency the reels give it. Nothing is placed by hand, the max win included:

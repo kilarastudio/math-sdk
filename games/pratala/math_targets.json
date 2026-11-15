@@ -1,5 +1,5 @@
 {
- "_note": "Design targets for Dragon's Glint (MATH.md). Ranges are [low, high], null = open end. Checked by .claude/skills/stake-math/scripts/math_profile.py.",
+ "_note": "Design targets for Pratala (MATH.md). Ranges are [low, high], null = open end. Checked by .claude/skills/stake-math/scripts/math_profile.py.",
  "base": {
   "rtp": [0.9665, 0.967],
   "cost": [1, 1],

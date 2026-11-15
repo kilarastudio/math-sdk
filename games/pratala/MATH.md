@@ -1,4 +1,4 @@
-# Dragon's Glint: desain math
+# Pratala: desain math
 
 Status: disimulasikan 2026-11-12, 200.000 ronde per mode spin (base, ante, boost) dan 100.000 per
 mode beli (bonus, super, hoard). Belum diunggah ke Studio.
@@ -21,7 +21,7 @@ Players, dibaca 12 Nov 2026 (laporan riset, bagian verifikasi):
 | Ganja Snail (Donut) | cluster 7×5, multiplier sel | 96,70% | 50.000× | 27,4 |
 | Lazy Vampire (Paperclip) | 19 lines, wild multiplier | 96,70% | 50.000× | 36,5 |
 | Candy Dash 2 (Paperclip) | cluster 7×7, multiplier sel berlipat dua | 96,00% | 50.000× | 49,3 |
-| Dragon's Glint | scatter pays 6×5, multiplier sel berlipat dua | 96,70% | 25.000× | 31,4 |
+| Pratala | scatter pays 6×5, multiplier sel berlipat dua | 96,70% | 25.000× | 31,4 |
 
 Multiplier sel berlipat dua sudah ada di cluster pays; versi scatter pays masih jarang.
 

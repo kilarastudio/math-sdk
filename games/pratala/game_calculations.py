@@ -11,8 +11,8 @@ class GameCalculations(Executables):
     def evaluate_scatter_with_glint(self) -> dict:
         """Pay every symbol with 8+ copies on the board, multiplied by the lit spots under it.
 
-        A symbol win's multiplier combines the lit spots (value 2+) under its positions,
-        by sum or max per the glint rule, or is 1x when none is lit. Primed spots (value 1) add nothing.
+        A symbol win's multiplier is the brightest lit spot (value 2+) under its positions,
+        or 1x when none is lit. Primed spots (value 1) add nothing.
         """
         board = self.board
         return_data = {"totalWin": 0, "wins": []}
@@ -28,8 +28,7 @@ class GameCalculations(Executables):
             if (win_size, sym) not in self.config.paytable:
                 continue
             lit = [self.glint[p["reel"]][p["row"]] for p in positions if self.glint[p["reel"]][p["row"]] >= 2]
-            combine = sum if self.config.glint_rule["combine"] == "sum" else max
-            symbol_mult = combine(lit) if lit else 1
+            symbol_mult = max(lit) if lit else 1
             for p in positions:
                 board[p["reel"]][p["row"]].explode = True
 

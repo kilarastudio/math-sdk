@@ -8,6 +8,8 @@ class GameStateOverride(GameExecutables):
         super().reset_book()
         self.tumble_win = 0
         self.strike_count = 0
+        self.gaze_count = 0
+        self.trigger_eyes = 0
         # Spots belong to one round: the base game starts every round with a clear grid.
         self.reset_glint()
 

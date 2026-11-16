@@ -1,19 +1,20 @@
 {
- "_note": "Design targets for Pratala (MATH.md). Ranges are [low, high], null = open end. Checked by .claude/skills/stake-math/scripts/math_profile.py.",
+ "_note": "Design targets for Pratala (MATH.md). Ranges are [low, high], null = open end. Checked by .claude/skills/stake-math/scripts/math_profile.py. Set on 2026-11-16 from the design model, before the full simulation was read.",
  "base": {
   "rtp": [0.9665, 0.967],
   "cost": [1, 1],
   "std": [26, 34],
   "_std": "user decision 2026-11-12: about 30",
   "hit": [0.29, 0.36],
-  "feature_every": [260, 320],
-  "feature_avg_win": [92, 102],
+  "feature_every": [280, 310],
+  "_feature_every": "the reels give 1 in 294.8 unforced; the solved rate should sit within about 5% of it",
+  "feature_avg_win": [92, 100],
   "_feature_avg_win": "so that buying it costs 100x",
   "base_rtp": [0.60, 0.68],
   "feature_rtp_share": [0.30, 0.38],
   "max_win": [25000, 25000],
-  "max_win_every": [2000000, 10000000],
-  "_max_win_every": "Engine: more often than 1 in 10,000,000; rarer than 1 in 2,000,000 keeps it a headline",
+  "max_win_every": [2000000, 8000000],
+  "_max_win_every": "Engine: more often than 1 in 10,000,000, kept 20% clear of it; rarer than 1 in 2,000,000 keeps it a headline",
   "win_below_cost_of_hits": [null, 0.60],
   "_win_below_cost_of_hits": "no agreed limit; a single low-symbol win is below the bet in every scatter pays game (SDK sample: 56%)"
  },
@@ -25,42 +26,54 @@
   "feature_every": [36, 48],
   "_feature_every": "about 7 times the base rate",
   "max_win": [25000, 25000],
-  "max_win_every": [null, 10000000]
+  "max_win_every": [null, 8000000]
  },
  "boost": {
   "rtp": [0.9665, 0.967],
-  "cost": [1.9, 1.9],
+  "cost": [1.85, 1.85],
   "std": [null, 57],
   "hit": [0.29, 0.36],
-  "feature_every": [250, 340],
+  "feature_every": [270, 310],
   "_feature_every": "the base rate: boost buys the strike, not more free spins",
   "base_rtp": [0.74, 0.84],
   "max_win": [25000, 25000],
-  "max_win_every": [null, 10000000]
+  "max_win_every": [null, 8000000]
  },
  "bonus": {
   "rtp": [0.9665, 0.967],
   "cost": [100, 100],
   "std": [null, 57],
-  "pays_back_cost": [0.15, null],
-  "_pays_back_cost": "a buy should return its price at least about 1 time in 6",
+  "pays_back_cost": [0.22, null],
+  "_pays_back_cost": "design model: 23%; the package before this one gave 17%",
+  "median_of_cost": [0.38, null],
+  "_median_of_cost": "design model: 0.43; before: 0.23",
+  "below_tenth_of_cost": [null, 0.17],
+  "_below_tenth_of_cost": "design model: 15%; before: 29%",
   "max_win": [25000, 25000],
-  "max_win_every": [null, 10000000]
+  "max_win_every": [null, 8000000]
  },
  "super": {
   "rtp": [0.9665, 0.967],
-  "cost": [350, 350],
+  "cost": [200, 215],
+  "_cost": "natural value / RTP, to the nearest 5",
   "std": [null, 57],
-  "pays_back_cost": [0.15, null],
+  "pays_back_cost": [0.23, null],
+  "median_of_cost": [0.42, null],
+  "below_tenth_of_cost": [null, 0.13],
+  "_shape": "the steady buy: a lit floor from the first spin. Design model: 24% / 0.47 / 11%",
   "max_win": [25000, 25000],
-  "max_win_every": [null, 10000000]
+  "max_win_every": [null, 8000000]
  },
  "hoard": {
   "rtp": [0.9665, 0.967],
-  "cost": [640, 640],
+  "cost": [425, 445],
+  "_cost": "natural value / RTP, to the nearest 5; 500x or less keeps the full $1,000 bet template",
   "std": [null, 57],
-  "pays_back_cost": [0.15, null],
+  "pays_back_cost": [0.17, null],
+  "median_of_cost": [0.28, null],
+  "below_tenth_of_cost": [null, 0.21],
+  "_shape": "the wild buy: a gaze before every spin builds late, so it returns its cost less often and reaches the max win most often. Design model: 18% / 0.33 / 18%",
   "max_win": [25000, 25000],
-  "max_win_every": [null, 10000000]
+  "max_win_every": [null, 8000000]
  }
 }

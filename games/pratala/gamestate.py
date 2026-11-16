@@ -48,7 +48,9 @@ class GameState(GameStateOverride):
             self.strike_spots(self.config.fs_start_strike)
         while self.fs < self.tot_fs and not self.wincap_triggered:
             self.update_freespin()
+            self.sweep_gaze()
             self.draw_board()
+            self.gaze_from_board()
             self.run_tumbles()
 
             self.set_end_tumble_event()
@@ -60,12 +62,16 @@ class GameState(GameStateOverride):
         self.end_freespin()
 
     def run_tumbles(self):
-        """Evaluate, light the spots under the wins, and tumble until the board stops paying."""
+        """Evaluate, heat the spots under the wins, and tumble until the board stops paying."""
+        in_free_spins = self.gametype == self.config.freegame_type
         self.get_scatterpays_update_wins()
         self.emit_tumble_win_events()
         self.update_glint_spots()
         while self.win_data["totalWin"] > 0 and not (self.wincap_triggered):
+            landed = self.exploding_per_reel()
             self.tumble_game_board()
+            if in_free_spins:
+                self.gaze_from_tumble(landed)
             self.get_scatterpays_update_wins()
             self.emit_tumble_win_events()
             self.update_glint_spots()

@@ -14,6 +14,7 @@ import argparse
 import json
 import os
 import random
+import shutil
 import subprocess
 import sys
 from multiprocessing import Pool
@@ -31,6 +32,36 @@ MODES = ["base", "ante", "boost", "bonus", "super", "hoard"]
 DEFAULT_SIMS = {"base": 200_000, "ante": 200_000, "boost": 200_000, "bonus": 100_000, "super": 100_000, "hoard": 100_000}
 # Modes whose base game differs (Glint Strike rate); ante plays the base mode's base game.
 NATURAL_MODES = ["base", "boost"]
+# Ante plays the base mode's rounds at other odds: same rules, same seeds, so the same books.
+# They are simulated once and copied; only the weights differ (game_weights.py).
+SAME_BOOKS = {"ante": "base"}
+
+
+def copy_books(config, mode: str, source: str) -> None:
+    """Give `mode` the books, lookup tables and records that were simulated for `source`."""
+    lib = config.library_path
+    pairs = [
+        (os.path.join(config.publish_path, f"books_{source}.jsonl.zst"), os.path.join(config.publish_path, f"books_{mode}.jsonl.zst")),
+        (os.path.join(lib, "lookup_tables", f"lookUpTable_{source}.csv"), os.path.join(lib, "lookup_tables", f"lookUpTable_{mode}.csv")),
+        (
+            os.path.join(lib, "lookup_tables", f"lookUpTableSegmented_{source}.csv"),
+            os.path.join(lib, "lookup_tables", f"lookUpTableSegmented_{mode}.csv"),
+        ),
+        (os.path.join(lib, "forces", f"force_record_{source}.json"), os.path.join(lib, "forces", f"force_record_{mode}.json")),
+        (
+            os.path.join(lib, "configs", f"books_{source}.verification.json"),
+            os.path.join(lib, "configs", f"books_{mode}.verification.json"),
+        ),
+    ]
+    for src, dst in pairs:
+        shutil.copyfile(src, dst)
+    force_path = os.path.join(lib, "forces", "force.json")
+    with open(force_path, encoding="UTF-8") as f:
+        force = json.load(f)
+    force[mode] = force[source]
+    with open(force_path, "w", encoding="UTF-8") as f:
+        json.dump(force, f, indent=4)
+    print(f"{mode}: books copied from {source}")
 
 
 def natural_chunk(args) -> dict:
@@ -108,10 +139,15 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if not args.skip_sims:
-        num_sim_args = {mode: args.sims or DEFAULT_SIMS[mode] for mode in args.modes}
+        copied = {mode: source for mode, source in SAME_BOOKS.items() if mode in args.modes}
+        simulated = [mode for mode in args.modes if mode not in copied]
+        simulated += [source for source in copied.values() if source not in simulated]
+        num_sim_args = {mode: args.sims or DEFAULT_SIMS[mode] for mode in simulated}
         fewest = min(num_sim_args.values())
         batching_size = 10000 if fewest >= 10000 * num_threads else max(1, fewest // num_threads)
         create_books(gamestate, config, num_sim_args, batching_size, num_threads, compression, profiling)
+        for mode, source in copied.items():
+            copy_books(config, mode, source)
         if not os.path.exists(os.path.join(config.library_path, "natural.json")):
             measure_natural(config, 4_000_000, num_threads)
     generate_configs(gamestate)

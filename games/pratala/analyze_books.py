@@ -8,8 +8,10 @@ Per mode, weighted by the published lookup table:
 * how often a base spin shows a Glint Strike and how often a win is multiplied,
 * the share of the mode's RTP paid through a Glint multiplier,
 * the highest multiplier applied in a round,
-* for rounds with free spins: how many spins were played, how often they retriggered, and
-  how often the session ended without any multiplied win.
+* for rounds with free spins: how many spins were played, how often they retriggered, how
+  many times the dragon gazed, how often the session ended without a gaze or without any
+  multiplied win, the share that returned under 10% of the mode's cost, and the share and the
+  RTP of the sessions that six or more scatters triggered.
 Writes library/book_stats.json, which MATH.md quotes.
 """
 
@@ -48,10 +50,15 @@ def analyze(mode: dict) -> dict:
         "fs_spins": 0.0,
         "fs_retriggered": 0.0,
         "fs_no_multiplier": 0.0,
+        "fs_gazes": 0.0,
+        "fs_no_gaze": 0.0,
+        "fs_under_tenth": 0.0,
+        "six_rounds": 0.0,
+        "six_win": 0.0,
     }
     top_mult = {}
     with open(os.path.join(PUBLISH, mode["events"]), "rb") as raw:
-        reader = io.TextIOWrapper(zstd.ZstdDecompressor().stream_reader(raw), encoding="UTF-8")
+        reader = io.TextIOWrapper(zstd.ZstdDecompressor().stream_reader(raw, read_across_frames=True), encoding="UTF-8")
         for line in reader:
             book = json.loads(line)
             p = probs[book["id"]]
@@ -59,7 +66,7 @@ def analyze(mode: dict) -> dict:
             top = 1
             fs_top = 1
             base_strike = base_multiplied = False
-            spins = retriggers = 0
+            spins = retriggers = gazes = trigger_eyes = 0
             for event in book["events"]:
                 kind = event["type"]
                 if kind == "reveal":
@@ -80,6 +87,9 @@ def analyze(mode: dict) -> dict:
                     base_strike = True
                 elif kind == "freeSpinTrigger":
                     in_fs = True
+                    trigger_eyes = len(event["positions"])
+                elif kind == "glintGaze":
+                    gazes += len(event["reels"])
                 elif kind == "updateFreeSpin":
                     spins += 1
                 elif kind == "freeSpinRetrigger":
@@ -95,6 +105,15 @@ def analyze(mode: dict) -> dict:
                     s["fs_retriggered"] += p
                 if fs_top == 1:
                     s["fs_no_multiplier"] += p
+                s["fs_gazes"] += p * gazes
+                if not gazes:
+                    s["fs_no_gaze"] += p
+                payout = book["payoutMultiplier"] / 100
+                if payout < 0.1 * cost:
+                    s["fs_under_tenth"] += p
+                if trigger_eyes >= 6:
+                    s["six_rounds"] += p
+                    s["six_win"] += p * payout
             top_mult[top] = top_mult.get(top, 0.0) + p
     fs = s["fs_rounds"]
     return {
@@ -107,6 +126,11 @@ def analyze(mode: dict) -> dict:
         "free_spins_played": s["fs_spins"] / fs if fs else 0.0,
         "sessions_retriggered": s["fs_retriggered"] / fs if fs else 0.0,
         "sessions_without_multiplied_win": s["fs_no_multiplier"] / fs if fs else 0.0,
+        "gazes_per_session": s["fs_gazes"] / fs if fs else 0.0,
+        "sessions_without_gaze": s["fs_no_gaze"] / fs if fs else 0.0,
+        "sessions_under_tenth_of_cost": s["fs_under_tenth"] / fs if fs else 0.0,
+        "six_scatter_share_of_sessions": s["six_rounds"] / fs if fs else 0.0,
+        "six_scatter_rtp": s["six_win"] / cost,
         "top_multiplier_in_round": {str(k): v for k, v in sorted(top_mult.items())},
     }
 
@@ -127,7 +151,11 @@ if __name__ == "__main__":
             f"{100 * r['base_spins_with_multiplied_win']:.1f}%; RTP through multipliers "
             f"{100 * r['rtp_through_multipliers']:.1f}% (RTP from events {100 * r['rtp_from_events']:.2f}%)\n"
             f"  free spins: {r['free_spins_played']:.1f} spins played, {100 * r['sessions_retriggered']:.1f}% retrigger, "
-            f"{100 * r['sessions_without_multiplied_win']:.1f}% end without a multiplied win\n"
+            f"{100 * r['sessions_without_multiplied_win']:.1f}% end without a multiplied win, "
+            f"{r['gazes_per_session']:.1f} gazes ({100 * r['sessions_without_gaze']:.1f}% of sessions have none), "
+            f"{100 * r['sessions_under_tenth_of_cost']:.1f}% return under a tenth of the cost; "
+            f"six-scatter sessions are {100 * r['six_scatter_share_of_sessions']:.3f}% of sessions "
+            f"and {100 * r['six_scatter_rtp']:.2f} points of RTP\n"
             f"  top multiplier in a round: {tops}"
         )
     path = os.path.join(HERE, "library", "book_stats.json")

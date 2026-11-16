@@ -1,7 +1,7 @@
 # Pratala: desain math
 
 Status: disimulasikan 2026-11-16, 200.000 ronde per mode spin (base, ante, boost) dan 100.000 per
-mode beli (bonus, super, hoard). Belum diunggah ke Studio.
+mode beli (bonus, super, hoard). Diunggah ke Studio 2026-11-16 sebagai Math Version 1: Submission Ready.
 
 Aturan lengkap ada di `readme.txt`. Target yang dibaca mesin ada di `math_targets.json`; target
 itu ditulis dari model desain sebelum simulasi penuh dibaca.
@@ -183,8 +183,10 @@ Diukur dengan `math_audit.py` (batas dibaca dari halaman Studio 12 Nov 2026); ke
 - Aturan diputar ulang terpisah dari kode game (`verify_books.py`): 900.000 buku, semuanya
   mengikuti `readme.txt` (bayaran, multiplier, pertumbuhan spot, tatapan, lantai awal, sapuan
   hoard, retrigger, total sama dengan lookup table).
-- Belum dicek: angka Studio sendiri setelah unggah. Definisi "ETL > 10.000×" di halaman tidak
-  menyebut apakah ambangnya dikalikan harga; audit membacanya sebagai 10.000× taruhan dasar.
+- Studio, 2026-11-16 (Math Version 1): Submission Ready, risk checks 6 dari 6 lolos (big win
+  frequency 5 dari 5, tail liability 4 dari 4, worst 0,1% 2 dari 2), template `1kmax_1cent`
+  (taruhan dasar $1.000), RTP 96,70% dan std dev sama dengan audit di keenam mode. Base diberi
+  label volatilitas "Extreme". Template ini memberi ruang sampai max win 50.000× dan harga 500×.
 
 ## Keputusan dan pertanyaan terbuka
 

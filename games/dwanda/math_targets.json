@@ -1,0 +1,57 @@
+{
+ "_note": "Design targets for Dwanda (MATH.md). Ranges are [low, high], null = open end. Checked by .claude/skills/stake-math/scripts/math_profile.py. Set on 2026-11-25 from unforced SDK measurements (run.py --natural 6,000,000 spins, --feature 36,000 sessions per mode, --forced 120,000 boards per count) before the full simulation was read.",
+ "base": {
+  "rtp": [0.9665, 0.967],
+  "cost": [1, 1],
+  "std": [20, 58],
+  "_std": "high volatility, under Engine's std dev limit of 60",
+  "hit": [0.29, 0.34],
+  "_hit": "the reels give 31.0% unforced",
+  "feature_every": [295, 345],
+  "_feature_every": "the reels give 1 in 322.9 unforced; the solved rate should sit within about 7% of it",
+  "feature_avg_win": [150, 195],
+  "_feature_avg_win": "natural mix of 3/4/5-scatter Duels: 3-scatter Duels average about 160x",
+  "base_rtp": [0.40, 0.46],
+  "feature_rtp_share": [0.52, 0.59],
+  "max_win": [25000, 25000],
+  "max_win_every": [1000000, 10000000],
+  "win_below_cost_of_hits": [null, 0.5]
+ },
+ "ante": {
+  "rtp": [0.9665, 0.967],
+  "cost": [3, 3],
+  "std": [null, 58],
+  "feature_every": [55, 85],
+  "max_win": [25000, 25000]
+ },
+ "bonus": {
+  "rtp": [0.9665, 0.967],
+  "cost": [160, 160],
+  "std": [null, 58],
+  "pays_back_cost": [0.2, null],
+  "median_of_cost": [0.31, null],
+  "below_tenth_of_cost": [null, 0.24],
+  "_buy": "unforced Duels: pays back 21.8%, median 0.343x of a 165x price, 21.9% under a tenth",
+  "max_win": [25000, 25000]
+ },
+ "blaze": {
+  "rtp": [0.9665, 0.967],
+  "cost": [250, 250],
+  "std": [null, 58],
+  "pays_back_cost": [0.2, null],
+  "median_of_cost": [0.36, null],
+  "below_tenth_of_cost": [null, 0.17],
+  "_buy": "unforced Duels: 22.3% / 0.391x / 15.0%",
+  "max_win": [25000, 25000]
+ },
+ "eclipse": {
+  "rtp": [0.9665, 0.967],
+  "cost": [500, 500],
+  "std": [null, 58],
+  "pays_back_cost": [0.21, null],
+  "median_of_cost": [0.4, null],
+  "below_tenth_of_cost": [null, 0.12],
+  "_buy": "unforced Duels: 23.2% / 0.444x / 9.8%",
+  "max_win": [25000, 25000]
+ }
+}

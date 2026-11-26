@@ -1,0 +1,169 @@
+{
+ "_note": "Design targets for The Vault Job (MATH.md). Ranges are [low, high], null = open end. Checked by .claude/skills/stake-math/scripts/math_profile.py. Set on 2026-11-25 from unforced SDK measurements (run.py --natural 10,000,000 spins, --feature 300,000-400,000 sessions per mode) before the full simulation was read.",
+ "base": {
+  "rtp": [
+   0.9665,
+   0.967
+  ],
+  "cost": [
+   1,
+   1
+  ],
+  "std": [
+   25,
+   58
+  ],
+  "_std": "high-volatility lines game, kept under Engine's std dev limit of 60 so no risk class fails",
+  "hit": [
+   0.36,
+   0.42
+  ],
+  "_hit": "the reels give 39.7% unforced",
+  "feature_every": [
+   265,
+   320
+  ],
+  "_feature_every": "the reels give 1 in 276.8 unforced; the solved rate should sit within about 10% of it",
+  "feature_avg_win": [
+   125,
+   160
+  ],
+  "_feature_avg_win": "natural mix of 3/4/5-scatter sessions: about 142x",
+  "base_rtp": [
+   0.44,
+   0.52
+  ],
+  "feature_rtp_share": [
+   0.46,
+   0.55
+  ],
+  "max_win": [
+   20000,
+   20000
+  ],
+  "max_win_every": [
+   1000000,
+   10000000
+  ],
+  "_max_win_every": "Engine guidance: more often than 1 in 10,000,000",
+  "win_below_cost_of_hits": [
+   null,
+   0.75
+  ]
+ },
+ "ante": {
+  "rtp": [
+   0.9665,
+   0.967
+  ],
+  "cost": [
+   2,
+   2
+  ],
+  "std": [
+   null,
+   58
+  ],
+  "feature_every": [
+   80,
+   115
+  ],
+  "max_win": [
+   20000,
+   20000
+  ]
+ },
+ "bonus": {
+  "rtp": [
+   0.9665,
+   0.967
+  ],
+  "cost": [
+   130,
+   130
+  ],
+  "std": [
+   null,
+   58
+  ],
+  "pays_back_cost": [
+   0.18,
+   null
+  ],
+  "median_of_cost": [
+   0.25,
+   null
+  ],
+  "below_tenth_of_cost": [
+   null,
+   0.26
+  ],
+  "_buy": "unforced sessions: pays back 20.1%, median 0.284x, 23.5% under a tenth",
+  "max_win": [
+   20000,
+   20000
+  ]
+ },
+ "inside": {
+  "rtp": [
+   0.9665,
+   0.967
+  ],
+  "cost": [
+   290,
+   290
+  ],
+  "std": [
+   null,
+   58
+  ],
+  "pays_back_cost": [
+   0.2,
+   null
+  ],
+  "median_of_cost": [
+   0.33,
+   null
+  ],
+  "below_tenth_of_cost": [
+   null,
+   0.15
+  ],
+  "_buy": "unforced sessions: 22.4% / 0.381x / 12.4%",
+  "max_win": [
+   20000,
+   20000
+  ]
+ },
+ "heist": {
+  "rtp": [
+   0.9665,
+   0.967
+  ],
+  "cost": [
+   600,
+   600
+  ],
+  "std": [
+   null,
+   58
+  ],
+  "pays_back_cost": [
+   0.21,
+   null
+  ],
+  "median_of_cost": [
+   0.38,
+   null
+  ],
+  "below_tenth_of_cost": [
+   null,
+   0.09
+  ],
+  "_buy": "unforced sessions: 24.0% / 0.443x / 6.7%",
+  "max_win": [
+   20000,
+   20000
+  ]
+ }
+}

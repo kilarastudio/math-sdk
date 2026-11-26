@@ -1,0 +1,57 @@
+{
+ "_note": "Design targets for Going Once (MATH.md). Ranges are [low, high], null = open end. Checked by .claude/skills/stake-math/scripts/math_profile.py. Set on 2026-11-25 from unforced SDK measurements (run.py --natural 4,000,000 spins, --feature 300,000 auctions per mode) before the full simulation was read.",
+ "base": {
+  "rtp": [0.9665, 0.967],
+  "cost": [1, 1],
+  "std": [20, 58],
+  "_std": "high volatility, under Engine's std dev limit of 60",
+  "hit": [0.24, 0.30],
+  "_hit": "the reels give 26.7% unforced",
+  "feature_every": [170, 205],
+  "_feature_every": "the reels give 1 in 188.1 unforced; the solved rate should sit within about 5% of it",
+  "feature_avg_win": [100, 122],
+  "_feature_avg_win": "unforced auctions average about 110x",
+  "base_rtp": [0.33, 0.40],
+  "feature_rtp_share": [0.58, 0.66],
+  "max_win": [25000, 25000],
+  "max_win_every": [1000000, 10000000],
+  "win_below_cost_of_hits": [null, 0.6]
+ },
+ "ante": {
+  "rtp": [0.9665, 0.967],
+  "cost": [1.5, 1.5],
+  "std": [null, 58],
+  "feature_every": [85, 115],
+  "max_win": [25000, 25000]
+ },
+ "bonus": {
+  "rtp": [0.9665, 0.967],
+  "cost": [110, 110],
+  "std": [null, 58],
+  "pays_back_cost": [0.17, null],
+  "median_of_cost": [0.35, null],
+  "below_tenth_of_cost": [null, 0.05],
+  "_buy": "unforced auctions: pays back 19.2%, median 0.396x, 3.0% under a tenth",
+  "max_win": [25000, 25000]
+ },
+ "gavel": {
+  "rtp": [0.9665, 0.967],
+  "cost": [190, 190],
+  "std": [null, 58],
+  "pays_back_cost": [0.17, null],
+  "median_of_cost": [0.35, null],
+  "below_tenth_of_cost": [null, 0.03],
+  "_buy": "unforced auctions: 18.8% / 0.395x / 1.6%",
+  "max_win": [25000, 25000]
+ },
+ "private": {
+  "rtp": [0.9665, 0.967],
+  "cost": [340, 340],
+  "std": [null, 58],
+  "pays_back_cost": [0.18, null],
+  "median_of_cost": [0.42, null],
+  "below_tenth_of_cost": [null, 0.01],
+  "_buy": "unforced auctions: 19.8% / 0.463x / 0.0%",
+  "max_win": [25000, 25000]
+ }
+}

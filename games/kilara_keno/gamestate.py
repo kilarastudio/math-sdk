@@ -1,19 +1,19 @@
-"""One round: book `sim` is draw pattern `sim % patterns` of the mode, with its own numbers."""
+"""One round: book `sim` is round `sim % rounds` of the mode, with its own numbers."""
 
 import random
 
 from game_override import GameStateOverride
-from game_calculations import all_patterns, HIT, KILAU
+from game_calculations import mode_rounds, HIT, KILAU
 
 
 class GameState(GameStateOverride):
-    _patterns = {}
+    _rounds = {}
 
-    def patterns_for(self, picks: int, draws: int, kilau: int) -> list:
-        key = (picks, draws, kilau)
-        if key not in self._patterns:
-            self._patterns[key] = all_patterns(picks, draws, kilau)
-        return self._patterns[key]
+    def rounds_for(self, mode: str) -> list:
+        if mode not in self._rounds:
+            _, picks, draws, options = self.config.mode_parts(mode)
+            self._rounds[mode] = mode_rounds(picks, draws, options, self.config.board_numbers)
+        return self._rounds[mode]
 
     def deal_numbers(self, pattern: list, picks: int, kilau: int) -> tuple:
         """A board that shows this pattern: selected numbers, Kilau numbers and the draw, in order."""
@@ -33,9 +33,9 @@ class GameState(GameStateOverride):
         self.repeat = True
         while self.repeat:
             self.reset_book()
-            level, picks, draws, kilau = self.config.mode_parts(self.betmode)
-            patterns = self.patterns_for(picks, draws, kilau)
-            pattern = patterns[sim % len(patterns)]
+            level, picks, draws, _ = self.config.mode_parts(self.betmode)
+            rounds = self.rounds_for(self.betmode)
+            pattern, kilau, _ = rounds[sim % len(rounds)]
             selected, marked, numbers = self.deal_numbers(pattern, picks, kilau)
             result = self.evaluate_pattern(pattern, picks, level)
 
@@ -50,6 +50,8 @@ class GameState(GameStateOverride):
                     "draws": draws,
                     "selected": selected,
                     "kilau": marked,
+                    # a Kilau round: this level marks 1 number, this round marks 3
+                    "kilauRound": kilau > self.config.level_kilau[level],
                     "numbers": numbers,
                     "pattern": pattern,
                     "hits": result["hits"],

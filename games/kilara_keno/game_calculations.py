@@ -1,7 +1,9 @@
 """Exact keno arithmetic: every draw pattern of a mode, its weight and its win.
 
 A pattern is the draw in order, one symbol per ball: MISS, HIT (a number the player picked) or
-KILAU (a marked number the player did not pick).
+KILAU (a marked number the player did not pick). A round is a pattern together with the number
+of Kilau numbers its board marks: a level with Kilau rounds has rounds that mark 1 and rounds
+that mark 3.
 """
 
 from itertools import combinations
@@ -37,6 +39,20 @@ def pattern_weight(pattern: list, picks: int, kilau: int, board: int) -> int:
     marked = pattern.count(KILAU)
     misses = len(pattern) - hits - marked
     return perm(picks, hits) * perm(kilau, marked) * perm(board - picks - kilau, misses)
+
+
+def mode_rounds(picks: int, draws: int, kilau_options: list, board: int) -> list:
+    """Every round of a mode: (pattern, Kilau numbers marked, weight).
+
+    The weight is the number of ordered draws that give the pattern, times the share of rounds
+    that mark that many Kilau numbers. Every Kilau count has the same number of ordered draws
+    in all, so the shares are the real shares.
+    """
+    rounds = []
+    for kilau, share in kilau_options:
+        for pattern in all_patterns(picks, draws, kilau):
+            rounds.append((pattern, kilau, share * pattern_weight(pattern, picks, kilau, board)))
+    return rounds
 
 
 def best_run(pattern: list, soft: bool) -> int:

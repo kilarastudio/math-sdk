@@ -1,7 +1,7 @@
-"""Kilara Keno (working id): 40-number keno with a streak multiplier.
+"""Keno Chain (math id keno_chain): 40-number keno with a streak multiplier.
 
-Every mode is one (level, picks) pair: Low with 1 to 10 picks, High with 3 to 10, Chain and Chain
-Max with 10. The design and its measurements are in MATH.md.
+Every mode is one (level, picks) pair: Calm, Bold and Wild with 3, 4, 5, 6, 8 or 10 picks, Chain
+and Chain Max with 10. The design and its measurements are in MATH.md.
 """
 
 from src.config.config import Config
@@ -12,9 +12,9 @@ from src.config.config import BetMode
 class GameConfig(Config):
     def __init__(self):
         super().__init__()
-        self.game_id = "kilara_keno"
+        self.game_id = "keno_chain"
         self.provider_numer = 0
-        self.working_name = "Kilara Keno"
+        self.working_name = "Keno Chain"
         self.wincap = 100000
         self.win_type = "other"
         self.rtp = 0.967
@@ -31,16 +31,19 @@ class GameConfig(Config):
         # Board and draw
         self.board_numbers = 40
         self.num_draws = 10
-        self.levels = ["low", "high", "chain", "chainmax"]
-        self.level_draws = {"low": 10, "high": 10, "chain": 12, "chainmax": 12}
-        # One and two numbers have one table each: at that size a second level changes little.
-        self.level_picks = {"low": list(range(1, 11)), "high": list(range(3, 11)), "chain": [10], "chainmax": [10]}
-        self.level_cost = {"low": 1.0, "high": 1.0, "chain": 10.0, "chainmax": 100.0}
+        # Calm, Bold and Wild are three volatility levels of the same draw: same odds, other tables.
+        self.levels = ["calm", "bold", "wild", "chain", "chainmax"]
+        self.level_draws = {"calm": 10, "bold": 10, "wild": 10, "chain": 12, "chainmax": 12}
+        # Six sizes, so that three levels fit Engine's 20 modes. 1 and 2 numbers have too few
+        # outcomes for three tables; 7 and 9 play like 8 and 10.
+        sizes = [3, 4, 5, 6, 8, 10]
+        self.level_picks = {"calm": sizes, "bold": sizes, "wild": sizes, "chain": [10], "chainmax": [10]}
+        self.level_cost = {"calm": 1.0, "bold": 1.0, "wild": 1.0, "chain": 10.0, "chainmax": 100.0}
         # Kilau numbers: marked numbers the player did not pick. Each one drawn adds a meter step.
-        self.level_kilau = {"low": 1, "high": 1, "chain": 1, "chainmax": 3}
+        self.level_kilau = {"calm": 1, "bold": 1, "wild": 1, "chain": 1, "chainmax": 3}
         # Kilau round: in these levels 1 round in 5 marks 3 Kilau numbers instead of 1. Chain Max
         # marks 3 in every round. The share is (rounds, out of).
-        self.kilau_round_levels = {"low", "high", "chain"}
+        self.kilau_round_levels = {"calm", "bold", "wild", "chain"}
         self.kilau_round_numbers = 3
         self.kilau_round_share = (1, 5)
         # Levels where a miss lowers the run by one instead of ending it.
@@ -53,30 +56,32 @@ class GameConfig(Config):
         # pay_tables[level][picks][hits], in base bets, before the multiplier.
         # Found with design_tables.py.
         self.pay_tables = {
-            "low": {
-                1: [0, 2.9],
-                2: [0, 1, 5.2],
+            "calm": {
                 3: [0, 0.8, 1.5, 7.8],
                 4: [0, 0.3, 1.5, 2.5, 18],
-                5: [0, 0.2, 1, 1.4, 6, 50],
-                6: [0, 0, 0.8, 1.2, 3, 12, 30],
-                7: [0, 0, 0.6, 1, 1.5, 5, 12, 30],
-                8: [0, 0, 0.2, 1, 1.2, 3, 7.5, 10, 20],
-                9: [0, 0, 0.3, 0.5, 1, 2, 5, 6, 20, 20],
-                10: [0, 0, 0, 0.5, 0.8, 1.2, 4.5, 7.5, 10, 20, 20],
+                5: [0, 0.3, 1, 1.2, 6, 30],
+                6: [0, 0, 0.8, 1.3, 2.5, 12, 50],
+                8: [0, 0, 0.2, 1, 1.3, 2, 10, 40, 60],
+                10: [0, 0, 0, 0.5, 0.6, 1.5, 5, 10, 20, 100, 100],
             },
-            "high": {
+            "bold": {
+                3: [0, 0, 2.8, 16.5],
+                4: [0, 0, 1, 5.5, 38],
+                5: [0, 0, 0.6, 2.2, 11, 80],
+                6: [0, 0, 0.5, 1.2, 4, 20, 160],
+                8: [0, 0, 0, 0.5, 1.5, 6.5, 20, 100, 300],
+                10: [0, 0, 0, 0, 1, 1.5, 6, 25, 120, 400, 400],
+            },
+            "wild": {
                 3: [0, 0, 1, 32.5],
-                4: [0, 0, 0.5, 7.5, 40],
+                4: [0, 0, 0.6, 2.5, 100],
                 5: [0, 0, 0.3, 2, 8.4, 250],
                 6: [0, 0, 0.2, 0.8, 6, 25, 500],
-                7: [0, 0, 0, 0.5, 3, 11, 100, 1000],
                 8: [0, 0, 0, 0.3, 1.2, 4.4, 40, 400, 2000],
-                9: [0, 0, 0, 0.1, 0.8, 2.5, 12, 120, 1500, 1500],
                 10: [0, 0, 0, 0, 0.5, 1.2, 5, 50, 600, 2000, 2000],
             },
             "chain": {10: [0, 0, 1.2, 2.5, 5, 5, 10, 20, 500, 2000, 2000]},
-            "chainmax": {10: [0, 0, 10, 25, 40, 40, 75, 300, 1500, 4000, 4000]},
+            "chainmax": {10: [0, 0, 0, 20, 40, 40, 120, 300, 2500, 4000, 4000]},
         }
 
         # Every round (a draw pattern and how many Kilau numbers it marks) is published this many times over, each copy with its own numbers,
@@ -116,6 +121,6 @@ class GameConfig(Config):
         return [(self.level_kilau[level], out_of - rounds), (self.kilau_round_numbers, rounds)]
 
     def mode_parts(self, mode: str) -> tuple:
-        """(level, picks, draws, Kilau options) of a mode name such as "high_8"."""
+        """(level, picks, draws, Kilau options) of a mode name such as "wild_8"."""
         level, picks = mode.rsplit("_", 1)
         return level, int(picks), self.level_draws[level], self.kilau_options(level)

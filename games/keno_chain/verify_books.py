@@ -1,11 +1,11 @@
 """Independent checks of the published files.
 
-    uv run python games/kilara_keno/verify_books.py
+    uv run python games/keno_chain/verify_books.py
 
 1. Every book's payoutMultiplier equals its lookup row, ids are 0-based and in order.
 2. Every book's numbers show its pattern, and its win is recomputed from that pattern with
    the rules in readme.txt.
-3. Kilau rounds (3 marked numbers in Low, High and Chain) carry exactly their share of a mode's
+3. Kilau rounds (3 marked numbers in Calm, Bold, Wild and Chain) carry exactly their share of a mode's
    weight.
 4. A real keno draw (40 numbers, random picks, random draw order, a Kilau round at its share) is
    simulated for a few modes and compared with the exact RTP of the lookup table.
@@ -90,7 +90,7 @@ def main():
 
     random.seed(7)
     board = list(range(1, cfg.board_numbers + 1))
-    for mode, rounds in (("low_1", 2_000_000), ("low_2", 2_000_000), ("low_8", 3_000_000), ("high_5", 3_000_000), ("chain_10", 2_000_000), ("chainmax_10", 2_000_000)):
+    for mode, rounds in (("calm_3", 2_000_000), ("bold_4", 2_000_000), ("bold_8", 3_000_000), ("bold_10", 3_000_000), ("wild_5", 3_000_000), ("chain_10", 2_000_000), ("chainmax_10", 2_000_000)):
         level, picks, draws, options = cfg.mode_parts(mode)
         counts = [kilau for kilau, _ in options]
         shares = [share for _, share in options]

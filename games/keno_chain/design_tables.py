@@ -1,9 +1,10 @@
 """Design tool: find tidy pay tables that land every mode inside the RTP window.
 
-    python3 games/kilara_keno/design_tables.py [--share 43/200] [mode ...]
+    python3 games/keno_chain/design_tables.py [--share 43/200] [mode ...]
 
---share tries another share of Kilau rounds (rounds of Low, High and Chain that mark 3 Kilau
-numbers instead of 1) than the one in use.
+--share tries another share of Kilau rounds (rounds of Calm, Bold, Wild and Chain that mark 3 Kilau
+numbers instead of 1) than the one in use. --list N prints the N tidiest tables of each mode.
+--check prints the tables in use as they are, without searching.
 
 RTP is linear in the pay table: RTP x cost = sum over hits of pay[h] x A[h], where
 A[h] = P(hits = h) x E[multiplier | h]. So the search only tries round numbers near a draft
@@ -20,11 +21,11 @@ sys.path.insert(0, os.path.dirname(__file__))
 from game_calculations import all_patterns, pattern_weight, meter_level  # noqa: E402
 
 BOARD = 40
-DRAWS = {"low": 10, "high": 10, "chain": 12, "chainmax": 12}
-COST = {"low": 1, "high": 1, "chain": 10, "chainmax": 100}
-KILAU = {"low": 1, "high": 1, "chain": 1, "chainmax": 3}
+DRAWS = {"calm": 10, "bold": 10, "wild": 10, "chain": 12, "chainmax": 12}
+COST = {"calm": 1, "bold": 1, "wild": 1, "chain": 10, "chainmax": 100}
+KILAU = {"calm": 1, "bold": 1, "wild": 1, "chain": 1, "chainmax": 3}
 # Kilau round: a share of the rounds of these levels marks 3 Kilau numbers instead of 1.
-KILAU_ROUND_LEVELS = {"low", "high", "chain"}
+KILAU_ROUND_LEVELS = {"calm", "bold", "wild", "chain"}
 KILAU_ROUND_NUMBERS = 3
 KILAU_ROUND_SHARE = Fraction(1, 5)
 SOFT = {"chain", "chainmax"}
@@ -32,31 +33,28 @@ MULT = {0: 1, 1: 1, 2: 2, 3: 3, 4: 5, 5: 10, 6: 15, 7: 25}
 TOP = 7
 WINDOW = (0.9650, 0.9670)
 AIM = 0.9662
-# One number has one pay to set, in steps of 0.1x (Engine: payouts are multiples of 0.1x), so its
-# RTP moves in steps of about 3.3 points and cannot be put in the studio's window: it uses
-# Engine's whole band.
-WINDOWS = {("low", 1): (0.9600, 0.9670)}
 
-# The search starts from version 2's tables (1 Kilau number in every round of Low, High and
-# Chain), thinned evenly to make room for the Kilau rounds.
+# The tables in use (math v2). In every level the volatility and the top win rise with the
+# numbers played, and at every size Calm < Bold < Wild. Bold pays from the same number of hits as
+# Wild, flatter.
+# The search looks at round numbers near these.
 DRAFT = {
-    ("low", 1): [0, 2.9], ("low", 2): [0, 1, 6], ("low", 3): [0, 1, 1.2, 8.4], ("low", 4): [0, 0.3, 1.5, 3.6, 15],
-    ("low", 5): [0, 0.2, 1, 1.5, 8, 50], ("low", 6): [0, 0, 0.8, 1.5, 3, 10, 40],
-    ("low", 7): [0, 0, 0.6, 1, 2, 5, 15, 40], ("low", 8): [0, 0, 0.3, 0.8, 1.5, 4, 6, 12, 20],
-    ("low", 9): [0, 0, 0.3, 0.5, 1, 2.5, 6, 8, 20, 20], ("low", 10): [0, 0, 0, 0.5, 0.8, 1.5, 5, 7.5, 10, 20, 20],
-    ("high", 3): [0, 0, 1, 35], ("high", 4): [0, 0, 0.5, 7.5, 50], ("high", 5): [0, 0, 0.4, 2, 9, 250],
-    ("high", 6): [0, 0, 0.2, 1, 5, 35, 500], ("high", 7): [0, 0, 0, 0.6, 3, 12, 100, 1000],
-    ("high", 8): [0, 0, 0, 0.3, 1.2, 5, 44, 400, 2000], ("high", 9): [0, 0, 0, 0.2, 0.8, 2.3, 15, 100, 1500, 1500],
-    ("high", 10): [0, 0, 0, 0, 0.5, 1.2, 5, 60, 600, 2000, 2000],
-    ("chain", 10): [0, 0, 2, 3, 5, 5, 10, 25, 500, 2000, 2000],
-    ("chainmax", 10): [0, 0, 10, 25, 40, 40, 75, 300, 1500, 4000, 4000],
+    ("calm", 3): [0, 0.8, 1.5, 7.8], ("calm", 4): [0, 0.3, 1.5, 2.5, 18], ("calm", 5): [0, 0.3, 1, 1.2, 6, 30],
+    ("calm", 6): [0, 0, 0.8, 1.3, 2.5, 12, 50], ("calm", 8): [0, 0, 0.2, 1, 1.3, 2, 10, 40, 60],
+    ("calm", 10): [0, 0, 0, 0.5, 0.6, 1.5, 5, 10, 20, 100, 100],
+    ("bold", 3): [0, 0, 2.8, 16.5], ("bold", 4): [0, 0, 1, 5.5, 38], ("bold", 5): [0, 0, 0.6, 2.2, 11, 80],
+    ("bold", 6): [0, 0, 0.5, 1.2, 4, 20, 160], ("bold", 8): [0, 0, 0, 0.5, 1.5, 6.5, 20, 100, 300],
+    ("bold", 10): [0, 0, 0, 0, 1, 1.5, 6, 25, 120, 400, 400],
+    ("wild", 3): [0, 0, 1, 32.5], ("wild", 4): [0, 0, 0.6, 2.5, 100], ("wild", 5): [0, 0, 0.3, 2, 8.4, 250],
+    ("wild", 6): [0, 0, 0.2, 0.8, 6, 25, 500], ("wild", 8): [0, 0, 0, 0.3, 1.2, 4.4, 40, 400, 2000],
+    ("wild", 10): [0, 0, 0, 0, 0.5, 1.2, 5, 50, 600, 2000, 2000],
+    ("chain", 10): [0, 0, 1.2, 2.5, 5, 5, 10, 20, 500, 2000, 2000],
+    ("chainmax", 10): [0, 0, 0, 20, 40, 40, 120, 300, 2500, 4000, 4000],
 }
 # Entries kept as drafted (the top of each table is a design decision, not a tuning knob).
-# Chain Max has no Kilau rounds (it marks 3 numbers in every round): its table is version 2's.
-FIXED = {("low", 8): [8], ("low", 9): [8, 9], ("low", 10): [9, 10], ("high", 6): [6], ("high", 7): [7],
-         ("high", 8): [8], ("high", 9): [8, 9], ("high", 10): [9, 10], ("chain", 10): [8, 9, 10],
-         ("chainmax", 10): [2, 3, 4, 5, 6, 7, 8, 9, 10]}
-
+FIXED = {("calm", 8): [8], ("calm", 10): [9, 10], ("bold", 5): [5], ("bold", 6): [6], ("bold", 8): [8],
+         ("bold", 10): [9, 10], ("wild", 6): [6], ("wild", 8): [8], ("wild", 10): [9, 10],
+         ("chain", 10): [8, 9, 10], ("chainmax", 10): [9, 10]}
 
 def kilau_options(level: str) -> list:
     """[(Kilau numbers marked, share of the rounds)] of a level."""
@@ -127,7 +125,6 @@ def solve(level: str, picks: int, keep: int = 1):
     free = [h for h in range(picks + 1) if draft[h] > 0 and h not in fixed]
     base = sum(draft[h] * A[h] for h in range(picks + 1) if h not in free)
     cost = COST[level]
-    window = WINDOWS.get((level, picks), WINDOW)
     if not free:
         return [((0, 0), draft, base / cost)], table
     # Bring the draft to the aim first, so the search looks at round numbers near a valid table.
@@ -138,7 +135,7 @@ def solve(level: str, picks: int, keep: int = 1):
     fine = len(free) <= 3
     for combo in product(*[candidates(draft[h], fine) for h in free]):
         rtp = (base + sum(v * A[h] for v, h in zip(combo, free))) / cost
-        if not window[0] <= rtp < window[1]:
+        if not WINDOW[0] <= rtp < WINDOW[1]:
             continue
         pay = draft[:]
         for v, h in zip(combo, free):
@@ -179,9 +176,16 @@ if __name__ == "__main__":
         at = only.index("--list")
         keep = int(only[at + 1])
         del only[at:at + 2]
+    check = "--check" in only
+    if check:
+        only.remove("--check")
     print(f"Kilau rounds: {float(KILAU_ROUND_SHARE):.2%} of the rounds of {sorted(KILAU_ROUND_LEVELS)}")
     for (level, picks) in DRAFT:
         if only and f"{level}_{picks}" not in only:
+            continue
+        if check:
+            table = mode_table(level, picks)
+            print(f"{level}_{picks:<2d} {DRAFT[(level, picks)]}\n         {describe(level, picks, DRAFT[(level, picks)], table)}")
             continue
         found, table = solve(level, picks, keep)
         if not found:

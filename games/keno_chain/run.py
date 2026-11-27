@@ -1,7 +1,7 @@
-"""Generate the books and exact lookup tables of Kilara Keno.
+"""Generate the books and exact lookup tables of Keno Chain.
 
 Usage (from the math-sdk root):
-    uv run python games/kilara_keno/run.py
+    uv run python games/keno_chain/run.py
 
 Every mode is enumerated in full: each round (an order of hits, misses and Kilau balls, on a
 board that marks 1 or 3 Kilau numbers) is published the same number of times, each copy with
@@ -9,8 +9,8 @@ its own numbers, at least 100,000 books per mode. Weights come from game_weights
 is in MATH.md.
 
 Afterwards, from the math-sdk root:
-    uv run python games/kilara_keno/verify_books.py
-    uv run python -m utils.rgs_verification -g kilara_keno
+    uv run python games/keno_chain/verify_books.py
+    uv run python -m utils.rgs_verification -g keno_chain
 """
 
 import glob

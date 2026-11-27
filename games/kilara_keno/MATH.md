@@ -16,14 +16,15 @@ Angka ditarik satu per satu; kemenangan = bayaran untuk jumlah kena × pengali m
 lewat kena berturut-turut dan lewat lucky ball, jadi urutan tarikan ikut menentukan hasil.
 
 Versi 3 menjawab batas 20 mode (Engine Support 2026-11-27: studio eksternal tidak boleh lebih).
-Menu tidak bisa dilebarkan, jadi yang ditambah adalah isi ronde dan pilihan yang tidak mengubah
-peluang:
+Menu tidak bisa dilebarkan, jadi yang ditambah adalah isi ronde dan satu jumlah angka:
 
 1. Lucky round: rasa mode premium (3 lucky number) muncul acak di Low, High dan Chain, tanpa
    memakai slot mode. Chain Max adalah versi yang dibeli: 3 lucky number di setiap ronde.
-2. Pemain boleh memilih sendiri letak lucky number-nya (frontend saja; papan dilabel ulang, math
-   tidak berubah).
-3. `high_2` diganti `low_1`: 1 sampai 10 angka semuanya bisa dimainkan.
+2. `high_2` diganti `low_1`: 1 sampai 10 angka semuanya bisa dimainkan.
+
+Lucky number selalu ditaruh oleh game. Pilihan "pemain menaruh lucky number sendiri" sempat
+dibangun di frontend dan dihapus pengguna pada hari yang sama (2026-11-27, "iya hapus"): terasa
+janggal, tidak dikenal dari keno lain, dan tidak mengubah peluang.
 
 ## Aturan yang menggerakkan math
 
@@ -170,8 +171,8 @@ menjadi 6.250×).
 - Disetujui pengguna 2026-11-26 (versi 2): dua mode premium di 10 angka; lucky number di semua mode,
   3 di Chain Max, lucky ball tidak memutus rentetan; meleset di Chain menurunkan rentetan satu
   tingkat; nama `chainmax_10` / CHAIN MAX; batas taruhan dasar $500; tangga melompat ×15 ke ×25.
-- Disetujui pengguna 2026-11-27: lucky round di Low dan High, pemain memilih lucky number sendiri,
-  `high_2` ditukar mode 1 angka.
+- Disetujui pengguna 2026-11-27: lucky round di Low dan High, `high_2` ditukar mode 1 angka.
+  Pemain menaruh lucky number sendiri: disetujui lalu dihapus pada hari yang sama.
 - Pilihan saya, diterima pengguna 2026-11-27 ("ikuti saran kamu"):
   1. Porsi lucky round 1 dari 5 (usul awal saya "misalnya 1 dari 10"; alasannya di atas).
   2. Chain juga punya lucky round (usul awal hanya Low dan High), supaya mode 10× tidak punya

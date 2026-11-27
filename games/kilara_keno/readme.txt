@@ -78,12 +78,6 @@ Books
   numbers as the i-th smallest number the player did not choose. Lucky numbers are among the
   other numbers and move with them. This is a relabelling of the board: hits, lucky balls, order
   and win are unchanged, and the frontend draws nothing at random.
-- The player's own lucky number: the player may name one number they did not pick as their lucky
-  number. One of the book's lucky numbers is then shown as that number, and the rest of the
-  book's other numbers are shown, in order, as the rest of the numbers the player did not pick.
-  Still a relabelling of the board: no outcome changes. In a round that marks 3, the other 2 are
-  where the book puts them. The book's lucky number shown as the player's is kilau[sum of
-  "numbers" mod the number of lucky numbers], with kilau ascending.
 - Replay: the RGS gives the mode and the book only, so a replay shows the book's own
   "selected", "kilau" and "numbers". The draw order, hits, multiplier and win are those of the round.
 - Event "finalWin": the round's win.
